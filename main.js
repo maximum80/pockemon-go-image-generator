@@ -81,7 +81,7 @@
         var imageIni = {
             xPos : 20,
             yPos : 60,
-            Scale : 0,
+            Scale : 1,
             imageData : null,
             resetImage : function(){
                 this.xPos = 0;
@@ -165,4 +165,38 @@
             }
         });
     });
+
+    //保存させる処理
+		//ここだけはブラウザ上で完結できなかった…。
+		//base64をデコードしてheaderを付加してechoするだけのPHPへPOSTしています
+		var save = function(){
+			var png = stage.toDataURL('image/png'); //base64エンコードした画像データ生成
+			if(png){
+				$('input[name="img"]').remove();
+				$('#saveform').append('<input type="hidden" name="img" value="'+png+'" />');
+				return true;
+			} else {
+				return false;
+			}
+		}
+
+	$(function(){
+		//canvasオブジェクトを事前に定義しておく
+		$(window).on('load',function(){
+			init();
+		});
+
+		//画像生成ボタンが押されたときにcanvas生成
+		$('#update').on('click',function(e){
+			stage = new createjs.Stage('result');
+			genImage();
+			stage.update();
+		});
+
+		//「画像として保存」ボタンが押された時の処理
+		$('#saveform').on('submit',function(){
+			save();
+		});
+	});
+
 })($);
